@@ -8,15 +8,24 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
   <script src="libs/epub.js"></script>
 
-  <link rel="stylesheet" type="text/css" href="examples.css">
+  <link rel="stylesheet" type="text/css" href="Styles.css">
 
 </head>
 <body>
+  <div class="topnav" id="myTopnav">
+    <a href="#home" class="active">E Reader</a>
+    <a id="prev" href="#prev" class="arrow">‹</a>
+    <a id="next" href="#next" class="arrow">›</a>
+    <a href="javascript:void(0);" class="icon" onclick="show()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+
   <div id="title"><input type="file" id="input"></div>
   <div id="viewer" style="height: 100%;" class="spreads"></div>
-  <a id="prev" href="#prev" class="arrow">‹</a>
-  <a id="next" href="#next" class="arrow">›</a>
+
 
   <script src="App.js"></script>
+  <script src="Header.js"></script>
 </body>
 </html>
