@@ -10,13 +10,14 @@ body {
     background-color: #333;
 }
 
-.topnav a {
+.topnav a, button {
+    user-select: none;
     float: left;
     display: block;
     color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
-    text-decoration: none;
+    text-decoration: double;
     font-size: 17px;
 }
 
