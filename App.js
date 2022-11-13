@@ -2,6 +2,8 @@ var book = ePub();
 var rendition;
 let pSize = 60;
 
+const updateFontSizeText = () => document.getElementById("font-size").innerHTML = pSize;
+
 const setFontSize = () => {
   rendition.themes.default({
     p: { "font-size": `${pSize}pt !important`, "line-height": "1.2" },
@@ -24,9 +26,10 @@ const fontSize = (type) =>
     {
         pSize-=5;
     }
-
+    console.log({book, rendition});
     setFontSize();
-    rendition.display();
+    rendition.start();
+    updateFontSizeText();
 }
 
 var inputElement = document.getElementById("input");
@@ -41,12 +44,14 @@ inputElement.addEventListener("change", function (e) {
 });
 
 function openBook(e) {
-  var bookData = e.target.result;
+  //var bookData = e.target.result;
   var title = document.getElementById("title");
   var next = document.getElementById("next");
   var prev = document.getElementById("prev");
 
-  book.open(bookData, "binary");
+  //book.open(bookData, "binary");
+  book.open("https://s3.amazonaws.com/moby-dick/OPS/package.opf");
+  
 
   rendition = book.renderTo("viewer", {
     method: "continuous",
@@ -62,11 +67,11 @@ function openBook(e) {
       method: "continuous",
       manager: "continuous"
     });
-    */
+  */
 
   setFontSize();
 
-  rendition.display();
+  rendition.display(4);
 
   var keyListener = function (e) {
     // Left Key
@@ -82,7 +87,7 @@ function openBook(e) {
 
   rendition.on("keyup", keyListener);
   rendition.on("relocated", function (location) {
-    console.log(location);
+    console.log({location});
   });
 
   next.addEventListener(
@@ -106,4 +111,5 @@ function openBook(e) {
   document.addEventListener("keyup", keyListener, false);
 }
 
-
+openBook();
+updateFontSizeText();
