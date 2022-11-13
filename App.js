@@ -1,9 +1,11 @@
 var book = ePub();
 var rendition;
 let pSize = 60;
+let mode = "light";
+const themes = { light: { color: "black" }, dark: { color: "white" } }
 
-const updateFontSizeText = () =>
-  (document.getElementById("font-size").innerHTML = pSize);
+const updateFontSizeText = () => document.getElementById("font-size").innerHTML = pSize;
+const updateThemeText = () => document.getElementById("theme").innerHTML = mode;
 
 function removeNewlines(str) {
   //remove line breaks from str
@@ -21,26 +23,46 @@ function removeNewlines(str) {
   return str;
 }
 
-const setFontSize = () => {
+const toggleTheme = () =>
+{
+  if(mode === "light")
+  {
+    mode = "dark";
+    document.getElementsByTagName("body")[0].style.backgroundColor  = "black"
+  }
+  else
+  {
+    mode = "light";
+    document.getElementsByTagName("body")[0].style.backgroundColor  = "white"
+  }
+  updateThemeText();
+  refreshStyles();
+  rendition.start();
+}
+
+const refreshStyles = () => {
+  //console.log(`${themes[mode].p} !important`);
+  if(!rendition) return;
+  const color = themes[mode].color;
+
   rendition.themes.default({
-    p: { "font-size": `${pSize}pt !important`, "line-height": "1.2" },
-    h6: { "font-size": `${pSize + 5}pt !important`, "line-height": "1.2" },
-    h5: { "font-size": `${pSize + 10}pt !important`, "line-height": "1.2" },
-    h4: { "font-size": `${pSize + 15}pt !important`, "line-height": "1.2" },
-    h3: { "font-size": `${pSize + 20}pt !important`, "line-height": "1.2" },
-    h2: { "font-size": `${pSize + 25}pt !important`, "line-height": "1.2" },
-    h1: { "font-size": `${pSize + 30}pt !important`, "line-height": "1.2" },
+    p: { "font-size": `${pSize}pt !important`, "line-height": "1.2", color },
+    h6: { "font-size": `${pSize + 5}pt !important`,"line-height": "1.2" },
+    h5: { "font-size": `${pSize + 10}pt !important`, "line-height": "1.2", color },
+    h4: { "font-size": `${pSize + 15}pt !important`, "line-height": "1.2", color },
+    h3: { "font-size": `${pSize + 20}pt !important`, "line-height": "1.2", color },
+    h2: { "font-size": `${pSize + 25}pt !important`, "line-height": "1.2", color },
+    h1: { "font-size": `${pSize + 30}pt !important`, "line-height": "1.2", color },
   });
 };
 
-const fontSize = (type) => {
+const setFontSize = (type) => {
   if (type === "INC") {
     pSize += 5;
   } else {
     pSize -= 5;
   }
-  console.log({ book, rendition });
-  setFontSize();
+  refreshStyles();
   rendition.start();
   updateFontSizeText();
 };
@@ -88,9 +110,10 @@ function openBook(e) {
     });
   */
 
-  setFontSize();
+  refreshStyles();
 
-  rendition.display();
+  rendition.display(3);
+  
 
   var keyListener = function (e) {
     // Left Key
@@ -135,5 +158,6 @@ function openBook(e) {
   document.addEventListener("keyup", keyListener, false);
 }
 
-//openBook();
+openBook();
 updateFontSizeText();
+updateThemeText();  
