@@ -1,5 +1,33 @@
 var book = ePub();
 var rendition;
+let pSize = 60;
+
+const setFontSize = () => {
+  rendition.themes.default({
+    p: { "font-size": `${pSize}pt !important`, "line-height": "1.2" },
+    h6: { "font-size": `${pSize + 5}pt !important`, "line-height": "1.2" },
+    h5: { "font-size": `${pSize + 10}pt !important`, "line-height": "1.2" },
+    h4: { "font-size": `${pSize + 15}pt !important`, "line-height": "1.2" },
+    h3: { "font-size": `${pSize + 20}pt !important`, "line-height": "1.2" },
+    h2: { "font-size": `${pSize + 25}pt !important`, "line-height": "1.2" },
+    h1: { "font-size": `${pSize + 30}pt !important`, "line-height": "1.2" },
+  });
+};
+
+const fontSize = (type) => 
+{
+    if(type === "INC")
+    {
+        pSize+=5;
+    }
+    else
+    {
+        pSize-=5;
+    }
+
+    setFontSize();
+    rendition.display();
+}
 
 var inputElement = document.getElementById("input");
 
@@ -36,17 +64,7 @@ function openBook(e) {
     });
     */
 
-  const pSize = 60;
-
-  rendition.themes.default({
-    p: { "font-size": `${pSize}pt !important`, "line-height": "1.2" },
-    h6: { "font-size": `${pSize + 5}pt !important`, "line-height": "1.2" },
-    h5: { "font-size": `${pSize + 10}pt !important`, "line-height": "1.2" },
-    h4: { "font-size": `${pSize + 15}pt !important`, "line-height": "1.2" },
-    h3: { "font-size": `${pSize + 20}pt !important`, "line-height": "1.2" },
-    h2: { "font-size": `${pSize + 25}pt !important`, "line-height": "1.2" },
-    h1: { "font-size": `${pSize + 30}pt !important`, "line-height": "1.2" },
-  });
+  setFontSize();
 
   rendition.display();
 
@@ -87,3 +105,5 @@ function openBook(e) {
 
   document.addEventListener("keyup", keyListener, false);
 }
+
+

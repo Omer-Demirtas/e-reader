@@ -14,16 +14,22 @@
 <body>
   <div class="topnav" id="myTopnav">
     <a href="#home" class="active">E Reader</a>
+
+    <span id="title"><input type="file" id="input"></span>
+
     <a id="prev" href="#prev" class="arrow">‹</a>
     <a id="next" href="#next" class="arrow">›</a>
+    
+    <a>Font Size:</a>
+    <a onclick="fontSize('INC')">+</a>
+    <a onclick="fontSize('DEC')">-</a>
+    
     <a href="javascript:void(0);" class="icon" onclick="show()">
       <i class="fa fa-bars"></i>
     </a>
   </div>
 
-  <div id="title"><input type="file" id="input"></div>
-  <div id="viewer" style="height: 100%;" class="spreads"></div>
-
+  <div style="height: 100%;" id="viewer" style="height: 100%;" class="spreads"></div>
 
   <script src="App.js"></script>
   <script src="Header.js"></script>
