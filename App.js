@@ -158,6 +158,6 @@ function openBook(e) {
   document.addEventListener("keyup", keyListener, false);
 }
 
-openBook();
+//openBook();
 updateFontSizeText();
 updateThemeText();  
