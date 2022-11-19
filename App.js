@@ -54,21 +54,10 @@ const refreshStyles = () => {
   });
 };
 
-const getPageNumber = async () => 
-{
-  if(!rendition.currentLocation()) return "";
-  let location = this.rendition.currentLocation();
-  let cfiString = location.start.cfi;
-  console.log({ cfiString })
-  //console.log(rendition.currentLocation());
-  //return `${loc.start.index}/${loc.start.displayed.total}`;
-  return 1;
-}
-
-const setPageNumber = async () => 
+const setPageNumber = async (page) => 
 {
   if(!rendition) return "";
-  return document.getElementById("pageNumber").innerHTML = await getPageNumber();
+  return document.getElementById("pageNumber").innerHTML = page;
 }
 
 const setFontSize = (type) => {
@@ -157,10 +146,8 @@ const openBook = async (e) =>
     const currentPage = book.locations.locationFromCfi(location.start.cfi);
     const totalPage = book.locations.total;
     console.log({ startCfi, currentPage, totalPage });
+    setPageNumber(`${currentPage}/${totalPage}`);
   });
-  
-  const a = await book.locations;
-  console.log({a, displayed});
   
   book.spine.hooks.serialize.register((output, section) => {
     section.output = removeNewlines(output);
@@ -170,7 +157,6 @@ const openBook = async (e) =>
     "click",
     function (e) {
       rendition.next();
-      setPageNumber();
       e.preventDefault();
     },
     false
@@ -180,7 +166,6 @@ const openBook = async (e) =>
     "click",
     function (e) {
       rendition.prev();
-      setPageNumber();
       e.preventDefault();
     },
     false
