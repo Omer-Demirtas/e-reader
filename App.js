@@ -17,9 +17,7 @@ function removeNewlines(str) {
     .trim()
     .replace(/(\r\n|\n|\r)/g, "");
   */
-  console.log({str});
   str = str.replace(/\s+/g,' ').trim();
-  console.log({str});
   return str;
 }
 
@@ -56,6 +54,23 @@ const refreshStyles = () => {
   });
 };
 
+const getPageNumber = async () => 
+{
+  if(!rendition.currentLocation()) return "";
+  let location = this.rendition.currentLocation();
+  let cfiString = location.start.cfi;
+  console.log({ cfiString })
+  //console.log(rendition.currentLocation());
+  //return `${loc.start.index}/${loc.start.displayed.total}`;
+  return 1;
+}
+
+const setPageNumber = async () => 
+{
+  if(!rendition) return "";
+  return document.getElementById("pageNumber").innerHTML = await getPageNumber();
+}
+
 const setFontSize = (type) => {
   if (type === "INC") {
     pSize += 5;
@@ -78,7 +93,8 @@ inputElement.addEventListener("change", function (e) {
   }
 });
 
-function openBook(e) {
+const openBook = async (e) => 
+{
   var bookData;
   var title = document.getElementById("title");
   var next = document.getElementById("next");
@@ -101,19 +117,24 @@ function openBook(e) {
     height: "100%",
   });
 
-  /*
-     book.renderTo("viewer", {
-      width: "100%",
-      height: "100%",
-      method: "continuous",
-      manager: "continuous"
-    });
-  */
 
+     
   refreshStyles();
 
-  rendition.display(3);
-  
+  let displayed = await rendition.display(0);
+
+  book.ready.then(function() {
+    const stored = localStorage.getItem(book.key() + '-locations');
+    console.log('metadata:', book.package.metadata);
+    if (stored) {
+        return book.locations.load(stored);
+    } else {
+        return book.locations.generate(1024); // Generates CFI for every X characters (Characters per/page)
+    }
+  }).then(function(location) { // This promise will take a little while to return (About 20 seconds or so for Moby Dick)
+      localStorage.setItem(book.key() + '-locations', book.locations.save());
+  });
+
 
   var keyListener = function (e) {
     // Left Key
@@ -128,12 +149,20 @@ function openBook(e) {
   };
 
   rendition.on("keyup", keyListener);
-  rendition.on("relocated", function (location) {
-    console.log({ location });
-  });
 
+  rendition.on("relocated", function (location) {
+    //progress = book.locations.percentageFromCfi(location.start.cfi);
+    //console.log('Progress:', progress); // The % of how far along in the book you are
+    const startCfi = location.start.cfi;
+    const currentPage = book.locations.locationFromCfi(location.start.cfi);
+    const totalPage = book.locations.total;
+    console.log({ startCfi, currentPage, totalPage });
+  });
+  
+  const a = await book.locations;
+  console.log({a, displayed});
+  
   book.spine.hooks.serialize.register((output, section) => {
-    console.log({ output, section });
     section.output = removeNewlines(output);
   });
 
@@ -141,6 +170,7 @@ function openBook(e) {
     "click",
     function (e) {
       rendition.next();
+      setPageNumber();
       e.preventDefault();
     },
     false
@@ -150,6 +180,7 @@ function openBook(e) {
     "click",
     function (e) {
       rendition.prev();
+      setPageNumber();
       e.preventDefault();
     },
     false
@@ -159,5 +190,11 @@ function openBook(e) {
 }
 
 //openBook();
-updateFontSizeText();
-updateThemeText();  
+
+const init = async () => 
+{
+  updateFontSizeText();
+  updateThemeText();  
+}
+
+init();
