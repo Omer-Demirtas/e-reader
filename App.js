@@ -2,10 +2,29 @@ var book = ePub();
 var rendition;
 let pSize = 60;
 let mode = "light";
+let currentPage = 0;
+let totalPage = 0;
+let bookId;
 const themes = { light: { color: "black" }, dark: { color: "white" } }
 
 const updateFontSizeText = () => document.getElementById("font-size").innerHTML = pSize;
 const updateThemeText = () => document.getElementById("theme").innerHTML = mode;
+
+const updateBookDetails = () => 
+{
+  const b = JSON.parse(localStorage.getItem(bookId));
+  console.log({ currentPage, totalPage })
+  localStorage.setItem(bookId, JSON.stringify({...b, currentPage, totalPage}))
+}
+const saveBookDetails = (meta) => 
+{
+  const { publisher,  creator, description, identifier, pubdate, title } = meta;
+  const book = {publisher,  creator, description, identifier, pubdate, title, lastOpen: new Date(), currentPage, totalPage}
+  
+  bookId = identifier;
+  console.log({bookId, book});
+  localStorage.setItem(`${identifier}`, JSON.stringify(book));
+}
 
 function removeNewlines(str) {
   //remove line breaks from str
@@ -54,10 +73,10 @@ const refreshStyles = () => {
   });
 };
 
-const setPageNumber = async (page) => 
+const setPageNumber = async () => 
 {
   if(!rendition) return "";
-  return document.getElementById("pageNumber").innerHTML = page;
+  return document.getElementById("pageNumber").innerHTML = `${currentPage}/${totalPage}`;
 }
 
 const setFontSize = (type) => {
@@ -106,22 +125,30 @@ const openBook = async (e) =>
     height: "100%",
   });
 
-
-     
   refreshStyles();
 
-  let displayed = await rendition.display(0);
+  //let displayed = await rendition.display(0);
 
-  book.ready.then(function() {
-    const stored = localStorage.getItem(book.key() + '-locations');
-    console.log('metadata:', book.package.metadata);
+  book.ready.then(async function() {
+    console.log(book.package.metadata);
+    const stored = localStorage.getItem(book.package.metadata.identifier);
+
     if (stored) {
-        return book.locations.load(stored);
+      const b = JSON.parse(stored);
+      totalPage = b.totalPage;
+      currentPage = b.currentPage;
+      console.log( currentPage, totalPage )
+      setPageNumber();
+      rendition.display(currentPage)
+      //updateBookOpenTime();
+      //return book.locations.load(currentPage);
     } else {
-        return book.locations.generate(1024); // Generates CFI for every X characters (Characters per/page)
+      saveBookDetails(book.package.metadata);
+      rendition.display(0)
+      //return book.locations.generate(1024); // Generates CFI for every X characters (Characters per/page)
     }
-  }).then(function(location) { // This promise will take a little while to return (About 20 seconds or so for Moby Dick)
-      localStorage.setItem(book.key() + '-locations', book.locations.save());
+  }).then(function(location) {
+      //localStorage.setItem(book.key() + '-locations', book.locations.save());
   });
 
 
@@ -142,11 +169,13 @@ const openBook = async (e) =>
   rendition.on("relocated", function (location) {
     //progress = book.locations.percentageFromCfi(location.start.cfi);
     //console.log('Progress:', progress); // The % of how far along in the book you are
+    console.log("relocated");
     const startCfi = location.start.cfi;
-    const currentPage = book.locations.locationFromCfi(location.start.cfi);
-    const totalPage = book.locations.total;
-    console.log({ startCfi, currentPage, totalPage });
-    setPageNumber(`${currentPage}/${totalPage}`);
+    console.log(book.locations.locationFromCfi(location.start.cfi));
+    currentPage = book.locations.locationFromCfi(location.start.cfi);
+    totalPage = book.locations.total;
+    updateBookDetails();
+    setPageNumber();
   });
   
   book.spine.hooks.serialize.register((output, section) => {
