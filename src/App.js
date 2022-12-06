@@ -1,8 +1,13 @@
+import { useRef } from "react";
+import { ReactEpubViewer } from "react-epub-viewer";
+import Reader from "./modules/reader/Reader";
 
 function App() {
+
+
   return (
     <div className="App">
-      <h1>Hello, World</h1>
+      <Reader />
     </div>
   );
 }
