@@ -6,18 +6,21 @@ const Reader = () =>
 {
     const viewRef = useRef();
 
-    //const [book, setBook] = useState();
-    //const [rendition, setRendition] = useState();
+    const [book, setBook] = useState();
+    const [rendition, setRendition] = useState();
 
     /* Init Component */
     useEffect(() => {
-        const book = null;
         const view = viewRef.current;
+
+        let book = null;
+        let rendition = null;
+        let displayed = null;
 
         const renderBook = async () => 
         {
-            var rendition = await book.renderTo(view, {width: 600, height: 400});
-            var displayed = await rendition.display();
+            rendition = await book.renderTo(view, {width: 600, height: 400});
+            displayed = await rendition.display();
         }
 
         const initBook = async () =>
@@ -28,15 +31,25 @@ const Reader = () =>
             book.loaded.navigation.then(({ toc }) => { });
 
             await renderBook();
-        }
 
-        console.log({book, rendition, displayed});    
+            setBook(book);
+            setRendition(rendition);
+
+            console.log({book, rendition, displayed});    
+        }
 
         initBook();
     }, []);
 
-    return (
+    const nextPaeg = () => rendition.next();
+    const prevPaeg = () => rendition.prev();
+
+    return (    
         <div>
+            <div style={{ display: "flex", justifyContent: "space-between", width: "70px" }}>
+                <button onClick={prevPaeg}>{"<"}</button>
+                <button onClick={nextPaeg}>{">"}</button>
+            </div>
             <div ref={viewRef}></div>
         </div>
     );
