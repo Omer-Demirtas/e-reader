@@ -1,58 +1,78 @@
 import { Book } from "epubjs";
 import React, { useEffect, useRef } from "react";
+import { useCallback } from "react";
 import { useState } from "react";
 
-const Reader = () => 
-{
-    const viewRef = useRef();
+const Reader = ({ url }) => {
+  const viewRef = useRef();
 
-    const [book, setBook] = useState();
-    const [rendition, setRendition] = useState();
+  const [book, setBook] = useState();
+  const [rendition, setRendition] = useState();
 
-    /* Init Component */
-    useEffect(() => {
-        const view = viewRef.current;
+  const nextPage = useCallback(() => rendition.next(), [rendition]);
+  const prevPage = useCallback(() => rendition.prev(), [rendition]);
 
-        let book = null;
-        let rendition = null;
-        let displayed = null;
+  const handleKeyPress = useCallback(({ key }) => {
+    key && key === "ArrowRight" && nextPage();
+    key && key === "ArrowLeft" && prevPage();
+  }, [rendition]);
 
-        const renderBook = async () => 
-        {
-            rendition = await book.renderTo(view, {width: 600, height: 400});
-            displayed = await rendition.display();
-        }
+  const onLocationChange = () => {}
 
-        const initBook = async () =>
-        {
-            book = new Book("Carl Sagan - Kozmos__зЭ9х29.epub");
-            
-            // Table of Contents
-            book.loaded.navigation.then(({ toc }) => { });
+  /* Init Component */
+  useEffect(() => {
+    const view = viewRef.current;
 
-            await renderBook();
+    let book = null;
+    let rendition = null;
+    let displayed = null;
 
-            setBook(book);
-            setRendition(rendition);
+    const renderBook = async () => {
+      rendition = await book.renderTo(view, { width: 600, height: 400 });
 
-            console.log({book, rendition, displayed});    
-        }
+      rendition.on("locationChanged", onLocationChange);
+      rendition.on("keyup", handleKeyPress || handleKeyPress);
 
-        initBook();
-    }, []);
+      displayed = await rendition.display();
 
-    const nextPaeg = () => rendition.next();
-    const prevPaeg = () => rendition.prev();
+      setBook(book);
+      setRendition(rendition);
+    };
 
-    return (    
-        <div>
-            <div style={{ display: "flex", justifyContent: "space-between", width: "70px" }}>
-                <button onClick={prevPaeg}>{"<"}</button>
-                <button onClick={nextPaeg}>{">"}</button>
-            </div>
-            <div ref={viewRef}></div>
-        </div>
-    );
-}
+    const initBook = async () => {
+      book = new Book("Carl Sagan - Kozmos__зЭ9х29.epub");
+
+      // Table of Contents
+      book.loaded.navigation.then(({ toc }) => {});
+
+      await renderBook();
+
+      setBook(book);
+      setRendition(rendition);
+
+      console.log({ book, rendition, displayed });
+    };
+
+    initBook();
+  }, [url]);
+
+  useEffect(() => {}, []);
+
+  return (
+    <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "70px",
+        }}
+      >
+        <button onClick={prevPage}>{"<"}</button>
+        <button onClick={nextPage}>{">"}</button>
+      </div>
+      <div ref={viewRef}></div>
+    </div>
+  );
+};
 
 export default Reader;
