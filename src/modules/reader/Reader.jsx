@@ -6,6 +6,7 @@ const Reader = ({ url }) => {
 
   const [book, setBook] = useState();
   const [rendition, setRendition] = useState();
+  const [loading, setLoading] = useState(false);
 
   const nextPage = useCallback(() => rendition.next(), [rendition]);
   const prevPage = useCallback(() => rendition.prev(), [rendition]);
@@ -21,7 +22,7 @@ const Reader = ({ url }) => {
   const onLocationChange = useCallback(
     (loc) => {
       console.log({ loc, book });
-    
+
       /*
       const startCfi = loc && loc.start;
       const endCfi = loc && loc.end;
@@ -53,11 +54,11 @@ const Reader = ({ url }) => {
 
   /* Init Component */
   useEffect(() => {
+    setLoading(true);
     const view = viewRef.current;
 
     // if already there is a book. destroy it.
-    if(book)
-    {
+    if (book) {
       book.destroy();
     }
 
@@ -67,7 +68,6 @@ const Reader = ({ url }) => {
 
     const renderBook = async () => {
       rendition_ = await book_.renderTo(view, {
-
         width: "4oopx",
         height: "400px",
       });
@@ -83,7 +83,6 @@ const Reader = ({ url }) => {
       await book_.loaded.navigation.then(({ toc }) => {});
 
       await book_.ready.then(() => {
-        console.log({ a: "Ready", book_ });
         const stored = localStorage.getItem(book_.key() + "-locations");
         if (stored) {
           return book_.locations.load(stored);
@@ -92,16 +91,18 @@ const Reader = ({ url }) => {
         }
       });
 
-      await renderBook();
+      setBook(book_);
 
-      console.log({ rendition_, book_ });
+      await renderBook();
 
       const locations = book_.locations;
       //const currentPage = locations.locationFromCfi(startCfi);
       const totalPage = locations.total;
 
-      setBook(book_);
       setRendition(rendition_);
+      console.log("1");
+      setLoading(false);
+      console.log("2  ");
 
       console.log({ book_, rendition_, displayed, totalPage, locations });
     };
@@ -116,22 +117,32 @@ const Reader = ({ url }) => {
 
     rendition.on("relocated", onLocationChange);
     rendition.on("keyup", handleKeyPress);
-
   }, [rendition]);
 
+
+  console.log({ loading });
+
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "70px",
-        }}
-      >
-        <button onClick={prevPage}>{"<"}</button>
-        <button onClick={nextPage}>{">"}</button>
-      </div>
+    <div style={{ width: "100%", height: "100%" }}>
       <div ref={viewRef}></div>
+      {!loading ? (
+        <>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "70px",
+            }}
+          >
+            <button onClick={prevPage}>{"<"}</button>
+            <button onClick={nextPage}>{">"}</button>
+          </div>
+        </>
+      ) : (
+        <div>
+          <h1>Loading...</h1>
+        </div>
+      )}
     </div>
   );
 };
