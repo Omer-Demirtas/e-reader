@@ -1,5 +1,5 @@
 import { Book } from "epubjs";
-import React, { useEffect, useRef, useCallback, useState} from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 
 const Reader = ({ url }) => {
   const viewRef = useRef();
@@ -18,35 +18,38 @@ const Reader = ({ url }) => {
     [rendition]
   );
 
-  const onLocationChange = useCallback((loc) => {
-    console.log({ loc, book});
-    const startCfi = loc && loc.start;
-    const endCfi = loc && loc.end;
-    const base = loc && loc.start.slice(8).split("!")[0];
-    
-    if (!book) return;
-    
-    const spineItem = book.spine.get(startCfi);
-    const navItem = book.navigation.get(spineItem.href);
-    const chapterName = navItem && navItem.label.trim();
+  const onLocationChange = useCallback(
+    (loc) => {
+      console.log({ loc, book });
+      const startCfi = loc && loc.start;
+      const endCfi = loc && loc.end;
+      const base = loc && loc.start.slice(8).split("!")[0];
 
-    const locations = book.locations;
-    const currentPage = locations.locationFromCfi(startCfi);
-    const totalPage = locations.total;
-    const total = book.locations.total;
-    console.log({
-      total,
-      startCfi, 
-      base,
-      totalPage,
-      currentPage,
-      locations,
-      chapterName,
-      navItem,
-      spineItem,
-      page: book.locations.locationFromCfi(loc.start.cfi)
-    });
-  }, [rendition]);
+      if (!book) return;
+
+      const spineItem = book.spine.get(startCfi);
+      const navItem = book.navigation.get(spineItem.href);
+      const chapterName = navItem && navItem.label.trim();
+
+      const locations = book.locations;
+      const currentPage = locations.locationFromCfi(startCfi);
+      const totalPage = locations.total;
+      const total = book.locations.total;
+      console.log({
+        total,
+        startCfi,
+        base,
+        totalPage,
+        currentPage,
+        locations,
+        chapterName,
+        navItem,
+        spineItem,
+        page: book.locations.locationFromCfi(loc.start.cfi),
+      });
+    },
+    [rendition]
+  );
 
   /* Init Component */
   useEffect(() => {
@@ -59,7 +62,7 @@ const Reader = ({ url }) => {
     const renderBook = async () => {
       rendition_ = await book_.renderTo(view, { width: 600, height: 400 });
 
-      console.log({rendition_});
+      console.log({ rendition_ });
       displayed = await rendition_.display();
     };
 
@@ -69,7 +72,15 @@ const Reader = ({ url }) => {
       // Table of Contents
       await book_.loaded.navigation.then(({ toc }) => {});
 
-      await book_.ready.then(ready => console.log({ready}))
+      await book_.ready.then(() => {
+        console.log({a: "Ready", book_});
+        const stored = localStorage.getItem(book_.key() + "-locations");
+        if (stored) {
+          return book_.locations.load(stored);
+        } else {
+          return book_.locations.generate(1024);
+        }
+      });
 
       await renderBook();
 
@@ -90,12 +101,11 @@ const Reader = ({ url }) => {
 
   useEffect(() => {
     if (!rendition) return;
-    
+
     console.log("Location change re rendered.");
 
     rendition.on("locationChanged", onLocationChange);
     rendition.on("keyup", handleKeyPress);
-
   }, [rendition]);
 
   return (
