@@ -1,16 +1,19 @@
-import Header from "components/Header";
-import React, { useState } from "react";
-import Library from "modules/pages/library";
+import React from "react";
+import { BrowserRouter, useRoutes } from "react-router-dom";
+import { Routes } from "Routes";
 
 function App() {
-
   return (
     <div className="App">
-      <Header />
-      
-      <Library />
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
     </div>
   );
 }
+
+const Router = () => {
+  return useRoutes(Routes);
+};
 
 export default App;
