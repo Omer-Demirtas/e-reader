@@ -2,9 +2,9 @@ import "./Styles.css";
 
 const Header = () => {
   return (
-    <div class="topnav">
-      <a class="active" href="#home">
-        React Reader
+    <div className="topnav">
+      <a className="active" href="#home">
+        React e reader
       </a>
     </div>
   );

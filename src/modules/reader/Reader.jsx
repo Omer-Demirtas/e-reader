@@ -100,9 +100,8 @@ const Reader = ({ url }) => {
       const totalPage = locations.total;
 
       setRendition(rendition_);
-      console.log("1");
+
       setLoading(false);
-      console.log("2  ");
 
       console.log({ book_, rendition_, displayed, totalPage, locations });
     };
@@ -119,12 +118,8 @@ const Reader = ({ url }) => {
     rendition.on("keyup", handleKeyPress);
   }, [rendition]);
 
-
-  console.log({ loading });
-
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      <div ref={viewRef}></div>
       {!loading ? (
         <>
           <div
@@ -143,6 +138,7 @@ const Reader = ({ url }) => {
           <h1>Loading...</h1>
         </div>
       )}
+      <div ref={viewRef}></div>
     </div>
   );
 };
