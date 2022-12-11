@@ -1,13 +1,14 @@
-import { useRef } from "react";
-import { ReactEpubViewer } from "react-epub-viewer";
-import Reader from "./modules/reader/Reader";
+import Header from "components/Header";
+import React, { useState } from "react";
+import Library from "modules/pages/library";
 
 function App() {
 
-
   return (
     <div className="App">
-      <Reader />
+      <Header />
+      
+      <Library />
     </div>
   );
 }
