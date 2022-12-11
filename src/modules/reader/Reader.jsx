@@ -55,6 +55,12 @@ const Reader = ({ url }) => {
   useEffect(() => {
     const view = viewRef.current;
 
+    // if already there is a book. destroy it.
+    if(book)
+    {
+      book.destroy();
+    }
+
     let book_ = null;
     let rendition_ = null;
     let displayed = null;
