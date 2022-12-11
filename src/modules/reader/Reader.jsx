@@ -21,30 +21,30 @@ const Reader = ({ url }) => {
   const onLocationChange = useCallback(
     (loc) => {
       console.log({ loc, book });
+    
+      /*
       const startCfi = loc && loc.start;
       const endCfi = loc && loc.end;
       const base = loc && loc.start.slice(8).split("!")[0];
+      */
 
       if (!book) return;
 
-      const spineItem = book.spine.get(startCfi);
-      const navItem = book.navigation.get(spineItem.href);
-      const chapterName = navItem && navItem.label.trim();
+      //const spineItem = book.spine.get(startCfi);
+      //const navItem = book.navigation.get(spineItem.href);
+      //const chapterName = navItem && navItem.label.trim();
 
       const locations = book.locations;
-      const currentPage = locations.locationFromCfi(startCfi);
+      console.log({ locations, loc });
+      const currentPage = locations.locationFromCfi(loc.start.cfi);
       const totalPage = locations.total;
       const total = book.locations.total;
       console.log({
         total,
-        startCfi,
-        base,
+        loc,
         totalPage,
         currentPage,
         locations,
-        chapterName,
-        navItem,
-        spineItem,
         page: book.locations.locationFromCfi(loc.start.cfi),
       });
     },
@@ -60,20 +60,24 @@ const Reader = ({ url }) => {
     let displayed = null;
 
     const renderBook = async () => {
-      rendition_ = await book_.renderTo(view, { width: 600, height: 400 });
+      rendition_ = await book_.renderTo(view, {
+
+        width: "4oopx",
+        height: "400px",
+      });
 
       console.log({ rendition_ });
       displayed = await rendition_.display();
     };
 
     const initBook = async () => {
-      book_ = new Book("Carl Sagan - Kozmos__зЭ9х29.epub");
+      book_ = new Book(url);
 
       // Table of Contents
       await book_.loaded.navigation.then(({ toc }) => {});
 
       await book_.ready.then(() => {
-        console.log({a: "Ready", book_});
+        console.log({ a: "Ready", book_ });
         const stored = localStorage.getItem(book_.key() + "-locations");
         if (stored) {
           return book_.locations.load(stored);
@@ -104,8 +108,9 @@ const Reader = ({ url }) => {
 
     console.log("Location change re rendered.");
 
-    rendition.on("locationChanged", onLocationChange);
+    rendition.on("relocated", onLocationChange);
     rendition.on("keyup", handleKeyPress);
+
   }, [rendition]);
 
   return (
