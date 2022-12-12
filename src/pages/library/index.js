@@ -1,26 +1,10 @@
-import axios from "utils/Api";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useBookStore } from "store/BookStore";
 import Book from "./components/Book";
 
 const Library = () => {
   const navigate = useNavigate();
-  const [books, setBooks] = useState([]);
-
-  useEffect(() => {
-    const mapBooks = (books) => books.map(b => {
-      const final = {};
-      Object.keys(b.fields).forEach(f => final[f] = Object.values(b.fields[f])[0]);
-      return final;
-  });
-    const getBooks = async () => 
-    {
-      const books = await axios.get("book");
-      setBooks(mapBooks(books.data.documents));
-    }
-
-    getBooks();
-  }, []);
+  const books = useBookStore(s => s.books);
 
   const navigateTo = (path) => navigate(`/book/${path}`); 
 

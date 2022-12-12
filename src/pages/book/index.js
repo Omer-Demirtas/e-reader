@@ -1,23 +1,11 @@
 import Reader from "modules/reader/Reader";
 import { useParams } from "react-router-dom";
-
-const BOOK_NAMES = [
-  {
-    id: 1,
-    name: "Carl Sagan Kozmos",
-    url: "Carl Sagan - Kozmos__зЭ9х29.epub",
-  },
-  {
-    id: 2,
-    name: "Eski Bahce Tezer Ozlu",
-    url: "Eski Bahce - Tezer Ozlu.epub",
-  },
-];
+import { useBookStore } from "store/BookStore";
 
 const Book = () => {
   const { bookId } = useParams();
-
-  console.log({ bookId, b: BOOK_NAMES.find((b) => b.id === Number(bookId)) });
+  const getBook = useBookStore(s => s.getBook);
+  const book = getBook(bookId);
 
   return (
     <div
@@ -28,7 +16,7 @@ const Book = () => {
         backgroundColor: "pink",
       }}
     >
-      <Reader url={`../${BOOK_NAMES.find((b) => b.id === Number(bookId)).url || ""}`} />
+      <Reader url={book.bookUrl} />
     </div>
   );
 };
