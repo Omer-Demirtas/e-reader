@@ -1,22 +1,27 @@
+import axios from "utils/Api";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Book from "./components/Book";
 
-const BOOK_NAMES = [
-  {
-    id: 1,
-    name: "Carl Sagan Kozmos",
-    url: "Carl Sagan - Kozmos__зЭ9х29.epub",
-  },
-  {
-    id: 2,
-    name: "Eski Bahce Tezer Ozlu",
-    url: "Eski Bahce - Tezer Ozlu.epub",
-  },
-];
-
 const Library = () => {
   const navigate = useNavigate();
-  
+  const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    const mapBooks = (books) => books.map(b => {
+      const final = {};
+      Object.keys(b.fields).forEach(f => final[f] = Object.values(b.fields[f])[0]);
+      return final;
+  });
+    const getBooks = async () => 
+    {
+      const books = await axios.get("book");
+      setBooks(mapBooks(books.data.documents));
+    }
+
+    getBooks();
+  }, []);
+
   const navigateTo = (path) => navigate(`/book/${path}`); 
 
   return (
@@ -24,7 +29,7 @@ const Library = () => {
       <h1>Your Books</h1>
 
       <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
-        {BOOK_NAMES.map((b) => (
+        {books.map((b) => (
           <Book onClick={navigateTo} key={b.id} book={b} />
         ))}
       </div>
