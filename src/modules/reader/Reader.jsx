@@ -57,6 +57,8 @@ const Reader = ({ url }) => {
     setLoading(true);
     const view = viewRef.current;
 
+    console.log({ url, book });
+
     // if already there is a book. destroy it.
     if (book) {
       book.destroy();
@@ -67,9 +69,23 @@ const Reader = ({ url }) => {
     let displayed = null;
 
     const renderBook = async () => {
+      const pSize = 65;
+      const color = { color: "black" };
+
       rendition_ = await book_.renderTo(view, {
-        width: "4oopx",
-        height: "400px",
+        width: '100%', height: '100%', 
+        method: "continuous",
+        flow: "scrolled",
+      });
+
+      rendition_.themes.default({
+        p: { "font-size": `${pSize}pt !important`, "line-height": "1.2", color },
+        h6: { "font-size": `${pSize + 5}pt !important`,"line-height": "1.2" },
+        h5: { "font-size": `${pSize + 10}pt !important`, "line-height": "1.2", color },
+        h4: { "font-size": `${pSize + 15}pt !important`, "line-height": "1.2", color },
+        h3: { "font-size": `${pSize + 20}pt !important`, "line-height": "1.2", color },
+        h2: { "font-size": `${pSize + 25}pt !important`, "line-height": "1.2", color },
+        h1: { "font-size": `${pSize + 30}pt !important`, "line-height": "1.2", color },
       });
 
       console.log({ rendition_ });
@@ -80,7 +96,7 @@ const Reader = ({ url }) => {
       book_ = new Book(url);
 
       // Table of Contents
-      await book_.loaded.navigation.then(({ toc }) => {});
+      await book_.loaded.navigation.then(({ toc }) => { console.log({ toc }) });
 
       await book_.ready.then(() => {
         const stored = localStorage.getItem(book_.key() + "-locations");
