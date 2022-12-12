@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/e-reader/static/css/main.30c33456.css",
+    "main.js": "/e-reader/static/js/main.ae37df31.js",
+    "index.html": "/e-reader/index.html",
+    "main.30c33456.css.map": "/e-reader/static/css/main.30c33456.css.map",
+    "main.ae37df31.js.map": "/e-reader/static/js/main.ae37df31.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.30c33456.css",
+    "static/js/main.ae37df31.js"
+  ]
+}
