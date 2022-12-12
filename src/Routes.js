@@ -1,5 +1,6 @@
 import PrivateRoute from "components/PrivateRoute";
 import AppLayout from "pages";
+import NotFound from "pages/404";
 import Book from "pages/book";
 import Home from "pages/Home/Home";
 import Library from "pages/library";
@@ -27,7 +28,7 @@ export const Routes =
     },
     {
         path: "*",
-        element: <div>Not Found</div>
+        element: <NotFound />
     }
 ];
 
