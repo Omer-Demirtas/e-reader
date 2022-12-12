@@ -22,7 +22,7 @@ const Book = () => {
   return (
     <div
       style={{
-        position: "fixed",
+        position: "relative",
         width: "100%",
         height: "100%",
         backgroundColor: "pink",
