@@ -1,7 +1,7 @@
 import { Book } from "epubjs";
 import React, { useEffect, useRef, useCallback, useState } from "react";
 
-const Reader = ({ url }) => {
+const Reader = ({ url, bookByte }) => {
   const viewRef = useRef();
 
   const [book, setBook] = useState();
@@ -54,7 +54,10 @@ const Reader = ({ url }) => {
 
   /* Init Component */
   useEffect(() => {
+    if(!url && !bookByte) return;
+
     setLoading(true);
+    
     const view = viewRef.current;
 
     console.log({ url, book });
@@ -93,7 +96,16 @@ const Reader = ({ url }) => {
     };
 
     const initBook = async () => {
-      book_ = new Book(url);
+      book_ = new Book();
+
+      if(bookByte)
+      {
+        book_.open(bookByte, "binary")
+      }
+      else
+      {
+        book_.open(url, "binary")
+      }
 
       // Table of Contents
       await book_.loaded.navigation.then(({ toc }) => { console.log({ toc }) });
