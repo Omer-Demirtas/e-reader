@@ -12,16 +12,15 @@ const ReaderOptions = ({ onPrevPage, onNextPage }) => {
   return (
     <div
       style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        backgroundColor: "#fff",
         paddingLeft: "10px",
         display: "flex",
         justifyContent: "space-between",
         paddingRight: "10px",
         height: 24,
         width: "100%",
+        position: "sticky",
+        top: 0,
+        zIndex: 1,
       }}
     >
       <div
