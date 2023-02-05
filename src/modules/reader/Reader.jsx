@@ -1,11 +1,9 @@
-import { Book } from "epubjs";
-import ReaderOptions from "pages/book/component/ReadOptions";
+import Epub from "epubjs";
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useReaderStore } from "store/ReaderStore";
 
-const Reader = ({ url, bookByte }) => {
+const Reader = ({ bookByte }) => {
   const viewRef = useRef();
-
   const styles = useReaderStore(s => s.styles);
 
   const [book, setBook] = useState();
@@ -56,6 +54,7 @@ const Reader = ({ url, bookByte }) => {
     [rendition]
   );
 
+  /*
   useEffect(() => {
     if (!rendition) return;
 
@@ -71,27 +70,45 @@ const Reader = ({ url, bookByte }) => {
 
     rendition.display();
   }, [rendition, styles]);
+  */
 
   /* Init Component */
   useEffect(() => {
-    if(!url && !bookByte) return;
+    if(!bookByte) return;
+    if(book) book.destroy();
 
     setLoading(true);
     
     const view = viewRef.current;
 
-    // if already there is a book. destroy it.
-    if (book) {
-      book.destroy();
-    }
-
     let book_ = null;
     let rendition_ = null;
     let displayed = null;
 
-    const renderBook = async () => {
+    const initBook = async () => {
+      //book_ = Epub(ebookUrl, epubOptions);
+      //book_ = new Epub();
 
-      rendition_ = await book_.renderTo(view, {
+      book_ = Epub();
+      book_.open(bookByte);
+
+      rendition_ = book_.renderTo(view, {
+        width: "100%",
+        height: 600
+      });
+
+      rendition_.display();
+      
+      setBook(book_);
+      setLoading(false);
+      setRendition(rendition_);
+
+      /*
+      await book_.open(bookByte);
+
+      const a = await getBookContents();
+
+      rendition_ = book_.renderTo(view, {
         width: '100%', height: '100%', 
         method: "continuous",
         flow: "scrolled",
@@ -107,53 +124,26 @@ const Reader = ({ url, bookByte }) => {
         h1: { "font-size": `${styles.fontSize + 30}pt !important`, "line-height": "1.2", color: styles.textColor },
       });
 
-      displayed = await rendition_.display();
-    };
+      displayed = rendition_.display();
 
-    const initBook = async () => {
-      book_ = new Book();
-
-      if(bookByte)
-      {
-        book_.open(bookByte, "binary")
-      }
-      else
-      {
-        book_.open(url, "binary")
-      }
-
-      // Table of Contents
-      await book_.loaded.navigation.then(({ toc }) => { console.log({ toc }) });
-
-      await book_.ready.then(() => {
-        const stored = localStorage.getItem(book_.key() + "-locations");
-        if (stored) {
-          return book_.locations.load(stored);
-        } else {
-          return book_.locations.generate(1024);
-        }
-      });
+      //const locations = book_.locations;
+      //const currentPage = locations.locationFromCfi(startCfi);
+      //const totalPage = locations.total;
 
       setBook(book_);
-
-      await renderBook();
-
-      const locations = book_.locations;
-      //const currentPage = locations.locationFromCfi(startCfi);
-      const totalPage = locations.total;
-
+      setLoading(false);
       setRendition(rendition_);
 
-      setLoading(false);
-
-      console.log({ book_, rendition_, displayed, totalPage, locations });
+      console.log({ book_, rendition_, displayed });
+      */
     };
 
     initBook();
 
     return book_.destroy();
-  }, [url]);
+  }, [bookByte]);
 
+  /*
   useEffect(() => {
     if (!rendition) return;
 
@@ -162,13 +152,10 @@ const Reader = ({ url, bookByte }) => {
     rendition.on("relocated", onLocationChange);
     rendition.on("keyup", handleKeyPress);
   }, [rendition]);
+  */
 
   return (
     <div style={{ width: "100%", height: "100%", backgroundColor: styles.backgroundColor }}>
-      <ReaderOptions 
-        onNextPage={nextPage}
-        onPrevPage={prevPage}
-      />
       {!loading ? (
         <>
         </>
