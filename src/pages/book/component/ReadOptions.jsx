@@ -1,7 +1,14 @@
 import React from "react";
+import { useReaderStore } from "store/ReaderStore";
 
-const ReaderOptions = ({ onPrevPage, onNextPage }) =>
-{
+const ReaderOptions = ({ onPrevPage, onNextPage }) => {
+  const styles = useReaderStore(s => s.styles);
+
+  const increaseFontSize = useReaderStore(s => s.increaseFontSize);
+  const decreaseFontSize = useReaderStore(s => s.decreaseFontSize);
+  const setTextColor = useReaderStore(s => s.setTextColor);
+  const setBackgroundColor = useReaderStore(s => s.setBackgroundColor);
+
   return (
     <div
       style={{
@@ -19,18 +26,39 @@ const ReaderOptions = ({ onPrevPage, onNextPage }) =>
     >
       <div
         style={{
-            display: "flex",
-            justifyContent: "space-between",
-            
+          display: "flex",
+          justifyContent: "space-between",
+          gap: "1rem",
         }}
       >
         <button onClick={onPrevPage}>{"<"}</button>
         <span>Page</span>
         <button onClick={onNextPage}>{">"}</button>
-      </div>
-      <div>
 
+        <button onClick={decreaseFontSize}>{"-"}</button>
+        <span>{styles.fontSize}</span>
+        <button onClick={increaseFontSize}>{"+"}</button>
+
+
+        <span>Background Color : </span>
+        <select value={styles.backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)}>
+          <option value="#ff0000">Red</option>
+          <option value="#00ff00">Green</option>
+          <option value="#0000ff">Blue</option>
+          <option value="#000000">Black</option>
+          <option value="#ffffff">White</option>
+        </select>
+
+        <span>Text Color : </span>
+        <select value={styles.textColor} onChange={(e) => setTextColor(e.target.value)}>
+          <option value="#ff0000">Red</option>
+          <option value="#00ff00">Green</option>
+          <option value="#0000ff">Blue</option>
+          <option value="#000000">Black</option>
+          <option value="#ffffff">White</option>
+        </select>
       </div>
+      <div></div>
     </div>
   );
 };
@@ -38,5 +66,5 @@ const ReaderOptions = ({ onPrevPage, onNextPage }) =>
 export default ReaderOptions;
 
 const Item = () => {
-  return(<div style={{ width: "33.33%" }}>ASDADASDSD</div>);
+  return <div style={{ width: "33.33%" }}>ASDADASDSD</div>;
 };
