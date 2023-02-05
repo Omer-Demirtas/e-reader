@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useBookStore } from "store/BookStore";
-import { getStorage, ref, getDownloadURL } from "firebase/storage"; //access the storage database
 import Reader from "modules/reader/Reader";
-import axios from "utils/Api";
 import { useReaderStore } from "store/ReaderStore";
 
 const Book = () => {
@@ -17,29 +15,7 @@ const Book = () => {
   useEffect(() => {
     if (!book) return;
 
-    const getEpub = async () => {
-      console.log("Getting books");
-
-      /*
-      storage.ref("FjZZXB6XEAAGlFI.jpg")
-      .getDownloadURL()
-        .then((url) => {
-          console.log({ url });
-          //setUrl(url);
-        })
-        */
-      /*
-      const storage = getStorage();
-      getDownloadURL(ref(storage, 'Charles Darwin - Türlerin Kökeni__Р0бУ7Р.epub'))
-      .then( async (url) => {
-        console.log({ downloadUrl : url})
-
-        const a = await axios.get(url);
-
-        console.log({ a });
-      });
-      */
-    };
+    const getEpub = async () => { };
 
     getEpub();
   }, [book]);
