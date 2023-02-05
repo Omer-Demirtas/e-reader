@@ -1,8 +1,12 @@
 import { Book } from "epubjs";
+import ReaderOptions from "pages/book/component/ReadOptions";
 import React, { useEffect, useRef, useCallback, useState } from "react";
+import { useReaderStore } from "store/ReaderStore";
 
 const Reader = ({ url, bookByte }) => {
   const viewRef = useRef();
+
+  const styles = useReaderStore(s => s.styles);
 
   const [book, setBook] = useState();
   const [rendition, setRendition] = useState();
@@ -52,6 +56,22 @@ const Reader = ({ url, bookByte }) => {
     [rendition]
   );
 
+  useEffect(() => {
+    if (!rendition) return;
+
+    rendition.themes.default({
+      p: { "font-size": `${styles.fontSize}pt !important`, "line-height": "1.2", color: styles.textColor },
+      h6: { "font-size": `${styles.fontSize + 5}pt !important`,"line-height": "1.2" },
+      h5: { "font-size": `${styles.fontSize + 10}pt !important`, "line-height": "1.2", color: styles.textColor },
+      h4: { "font-size": `${styles.fontSize + 15}pt !important`, "line-height": "1.2", color: styles.textColor },
+      h3: { "font-size": `${styles.fontSize + 20}pt !important`, "line-height": "1.2", color: styles.textColor },
+      h2: { "font-size": `${styles.fontSize + 25}pt !important`, "line-height": "1.2", color: styles.textColor },
+      h1: { "font-size": `${styles.fontSize + 30}pt !important`, "line-height": "1.2", color: styles.textColor },
+    });
+
+    rendition.display();
+  }, [rendition, styles]);
+
   /* Init Component */
   useEffect(() => {
     if(!url && !bookByte) return;
@@ -59,8 +79,6 @@ const Reader = ({ url, bookByte }) => {
     setLoading(true);
     
     const view = viewRef.current;
-
-    console.log({ url, book });
 
     // if already there is a book. destroy it.
     if (book) {
@@ -72,8 +90,6 @@ const Reader = ({ url, bookByte }) => {
     let displayed = null;
 
     const renderBook = async () => {
-      const pSize = 65;
-      const color = { color: "black" };
 
       rendition_ = await book_.renderTo(view, {
         width: '100%', height: '100%', 
@@ -82,16 +98,15 @@ const Reader = ({ url, bookByte }) => {
       });
 
       rendition_.themes.default({
-        p: { "font-size": `${pSize}pt !important`, "line-height": "1.2", color },
-        h6: { "font-size": `${pSize + 5}pt !important`,"line-height": "1.2" },
-        h5: { "font-size": `${pSize + 10}pt !important`, "line-height": "1.2", color },
-        h4: { "font-size": `${pSize + 15}pt !important`, "line-height": "1.2", color },
-        h3: { "font-size": `${pSize + 20}pt !important`, "line-height": "1.2", color },
-        h2: { "font-size": `${pSize + 25}pt !important`, "line-height": "1.2", color },
-        h1: { "font-size": `${pSize + 30}pt !important`, "line-height": "1.2", color },
+        p: { "font-size": `${styles.fontSize}pt !important`, "line-height": "1.2", color: styles.textColor },
+        h6: { "font-size": `${styles.fontSize + 5}pt !important`,"line-height": "1.2" },
+        h5: { "font-size": `${styles.fontSize + 10}pt !important`, "line-height": "1.2", color: styles.textColor },
+        h4: { "font-size": `${styles.fontSize + 15}pt !important`, "line-height": "1.2", color: styles.textColor },
+        h3: { "font-size": `${styles.fontSize + 20}pt !important`, "line-height": "1.2", color: styles.textColor },
+        h2: { "font-size": `${styles.fontSize + 25}pt !important`, "line-height": "1.2", color: styles.textColor },
+        h1: { "font-size": `${styles.fontSize + 30}pt !important`, "line-height": "1.2", color: styles.textColor },
       });
 
-      console.log({ rendition_ });
       displayed = await rendition_.display();
     };
 
@@ -135,6 +150,8 @@ const Reader = ({ url, bookByte }) => {
     };
 
     initBook();
+
+    return book_.destroy();
   }, [url]);
 
   useEffect(() => {
@@ -147,19 +164,13 @@ const Reader = ({ url, bookByte }) => {
   }, [rendition]);
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div style={{ width: "100%", height: "100%", backgroundColor: styles.backgroundColor }}>
+      <ReaderOptions 
+        onNextPage={nextPage}
+        onPrevPage={prevPage}
+      />
       {!loading ? (
         <>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "70px",
-            }}
-          >
-            <button onClick={prevPage}>{"<"}</button>
-            <button onClick={nextPage}>{">"}</button>
-          </div>
         </>
       ) : (
         <div>
