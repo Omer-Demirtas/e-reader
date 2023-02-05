@@ -6,13 +6,12 @@ export const useReaderStore = create((set, get) => ({
   styles: {
     fontSize: 60, 
     textColor: "black",
-    backgroubndColor: "white"
+    backgroundColor: "white"
   },
   setBookByte: (bookByte) => set((state) => ({ ...state, bookByte })),
   setUrl: (url) => set((state) => ({ ...state, url })),
   increaseFontSize: () => set(state => ({ ...state, styles: { ...state.styles, fontSize: state.styles.fontSize + 5 }})),
   decreaseFontSize: () => set(state => ({ ...state, styles: { ...state.styles, fontSize: state.styles.fontSize - 5 }})),
   setTextColor: (textColor) => set(state => ({ ...state, styles: { ...state.styles, textColor }})),
-  setBackgroundColor: (backgroubndColor) => set(state => ({ ...state, styles: { ...state.styles, backgroubndColor }})),
-
+  setBackgroundColor: (backgroundColor) => set(state => ({ ...state, styles: { ...state.styles, backgroundColor }})),
 }));

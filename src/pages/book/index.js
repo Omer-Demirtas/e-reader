@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import EpubReader from "modules/EpubReader";
+import Reader from "modules/reader/Reader";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useBookStore } from "store/BookStore";
-import Reader from "modules/reader/Reader";
 import { useReaderStore } from "store/ReaderStore";
 
 const Book = () => {
@@ -10,15 +11,25 @@ const Book = () => {
   const url = useReaderStore((s) => s.url);
   const bookByte = useReaderStore((s) => s.bookByte);
 
-  const book = getBook(bookId);
+  const ref = useRef();
 
   useEffect(() => {
-    if (!book) return;
+    var book_ = null;
+    var rendition_ = null
+    /*
+    book_ = new Epub();
+    book_.open(bookByte);
 
-    const getEpub = async () => {};
+    const view = ref.current;
 
-    getEpub();
-  }, [book]);
+    rendition_ = book_.renderTo(view, {
+      width: "100%",
+      height: 600
+    });
+
+    rendition_.display();
+    */
+  }, [bookByte]);
 
   return (
     <div
@@ -28,7 +39,7 @@ const Book = () => {
         height: "100%",
       }}
     >
-      <Reader url={url} bookByte={bookByte} />
+      <EpubReader bookByte={bookByte} />
     </div>
   );
 };
