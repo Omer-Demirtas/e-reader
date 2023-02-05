@@ -15,7 +15,7 @@ const Book = () => {
   useEffect(() => {
     if (!book) return;
 
-    const getEpub = async () => { };
+    const getEpub = async () => {};
 
     getEpub();
   }, [book]);
@@ -26,7 +26,6 @@ const Book = () => {
         position: "relative",
         width: "100%",
         height: "100%",
-        backgroundColor: "pink",
       }}
     >
       <Reader url={url} bookByte={bookByte} />
