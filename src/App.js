@@ -16,8 +16,6 @@ function App() {
   });
     const getBooks = async () => 
     {
-      const books = await axios.get("book");
-      setBooks(mapBooks(books.data.documents));
     }
 
     getBooks();
