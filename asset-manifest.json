@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/e-reader/static/css/main.30c33456.css",
-    "main.js": "/e-reader/static/js/main.17793653.js",
+    "main.js": "/e-reader/static/js/main.99557094.js",
     "index.html": "/e-reader/index.html",
     "main.30c33456.css.map": "/e-reader/static/css/main.30c33456.css.map",
-    "main.17793653.js.map": "/e-reader/static/js/main.17793653.js.map"
+    "main.99557094.js.map": "/e-reader/static/js/main.99557094.js.map"
   },
   "entrypoints": [
     "static/css/main.30c33456.css",
-    "static/js/main.17793653.js"
+    "static/js/main.99557094.js"
   ]
 }
