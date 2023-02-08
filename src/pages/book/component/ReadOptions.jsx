@@ -1,7 +1,7 @@
 import React from "react";
 import { useReaderStore } from "store/ReaderStore";
 
-const ReaderOptions = ({ onPrevPage, onNextPage }) => {
+const ReaderOptions = ({ onPrevPage, onNextPage, backgroundColor }) => {
   const styles = useReaderStore(s => s.styles);
 
   const increaseFontSize = useReaderStore(s => s.increaseFontSize);
@@ -13,6 +13,7 @@ const ReaderOptions = ({ onPrevPage, onNextPage }) => {
     <div
       style={{
         paddingLeft: "10px",
+        backgroundColor,
         display: "flex",
         justifyContent: "space-between",
         paddingRight: "10px",
